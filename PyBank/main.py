@@ -103,8 +103,8 @@ with open(outputcsvpath, 'w') as csvoutputfile:
     csvwriter.writerow([f'Average Change: {formatted_AvgChange}'])
 
     # Write Greatest Increase in Profits
-    csvwriter.writerow([f'Greatest Increase in Profits: Aug-16 ($1862002)'])
+    csvwriter.writerow([f'Greatest Increase in Profits: {GreatestIncDate} {formatted_GreatestIncAmt}'])
     
     # Write the Greatest Decrease in Profits
-    csvwriter.writerow([f'Greatest Decrease in Profits: Feb-14 ($-1825558)'])
+    csvwriter.writerow([f'Greatest Decrease in Profits: {GreatestDecDate} {formatted_GreatestDecAmt}'])
 
