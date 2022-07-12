@@ -1,6 +1,7 @@
 #The dataset is composed of three columns: "Voter ID", "County", and "Candidate". 
 
 #Import Modules
+from operator import contains
 import os
 import csv
 
@@ -20,51 +21,71 @@ with open(inputcsvpath) as csvinputfile:
 
     #Initialize Variables
     NumRows = 0
+    CandidateName = ""
+    Candidates = {}
+    VoteCount = 0
 
-#The total number of votes cast 
-#   count on the loop running through the rows of the file
+#The total number of votes cast - count on the loop running through the rows of the file
     #Read each row of data after the header
     for row in csvreader:
         #Count rows
         NumRows = NumRows +1
 
+        #A complete list of candidates who received votes loop through adding unique candidate names to a Candidate list and counting votes per candidate
+        CandidateName = row[2]
+        if CandidateName in Candidates:
+            VoteCount = Candidates[CandidateName] +1
+            Candidates[CandidateName] = VoteCount
+        else:
+            Candidates[CandidateName] = 1
 
 
-#A complete list of candidates who received votes 
-#   loop through adding unique candidate names to a Candidate list
-
-#The percentage of votes each candidate won
-#   Calculation of num votes/total voles
-
-#The total number of votes each candidate won
-#   Need to look at lists vs dictionaries, how to assign the number to the name
-
-#The winner of the election based on popular vote.
-#   Greatest vote number is the winner
-
-
-
-#Print the data to screen
-
+#----------Print the data to screen and write to the file----------------
 # Print the header section
-print('Election Results')
-print('------------------------------')
-
-# Print the Total number of votes
-print(f'Total Votes: {NumRows}')
-print('------------------------------')
-
-
-#Create and export table to csv file
 with open(outputcsvpath, 'w') as csvoutputfile:
-
     # Initialize csv.writer
     csvwriter = csv.writer(csvoutputfile, delimiter=',')
+    
+    #Print Header Section to screen
+    print('Election Results')
+    print('------------------------------')
 
-    # Write the header section
+    # Write the header section to file
     csvwriter.writerow(['Election Results'])
     csvwriter.writerow(['------------------------------'])
 
-    # Write the Total number of votes
+    # Print the Total number of votes to screen
+    print(f'Total Votes: {NumRows}')
+    print('------------------------------')
+
+    # Write the Total number of votes to file
     csvwriter.writerow([f'Total Votes: {NumRows}'])
+    csvwriter.writerow(['------------------------------'])
+
+    #Print Candidate Names, percent of vote and total votes to screen and write to file
+    Count = 0
+    HighVotes = 0
+
+    for x in Candidates:
+        CandidateName = list(Candidates.items())[Count][0]
+        VoteCount = list(Candidates.items())[Count][1]
+        formatted_VotePercent = "{:,.3f}%".format(VoteCount/NumRows*100)
+        print(f'{CandidateName}:  {formatted_VotePercent} ({VoteCount})')
+        csvwriter.writerow([f'{CandidateName}:  {formatted_VotePercent} ({VoteCount})'])
+        Count = Count+1
+
+        #Identify the winner by finding candidate with highest votes
+        if VoteCount>HighVotes:
+            Winner = CandidateName
+            HighVotes = VoteCount
+        
+    print('------------------------------')
+    csvwriter.writerow(['------------------------------'])
+
+    #Print Winner to screen
+    print(f'Winner: {Winner}')
+    print('------------------------------')
+
+    #Write winner to the file
+    csvwriter.writerow([f'Winner: {Winner}'])
     csvwriter.writerow(['------------------------------'])
